@@ -1,0 +1,22 @@
+.custom-arrow {
+  z-index: 20;
+  font-size: 2rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  border-radius: 9999px; /* rounded-full */
+  cursor: pointer;
+  position: absolute;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+.next{
+    right: 20px !important;
+}
+.prev{
+    left: 5px !important;
+    background-color: black;
+}
+.custom-arrow:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}

@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+*{
+  box-sizing: border-box;
+}
+
+
+:root{
+  --colorPrimary: #ff5252;
+  --bgPrimary: #ff5252;
+}
+
+body{
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  background: #f5f0f0;
+}
+
+.container{
+  width: 90%;
+  margin: auto;
+}
+
+/* Common styling for both arrows */
+.swiper-button-prev,
+.swiper-button-next {
+  height: 40px !important;
+  width: 40px !important;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: 350ms ease;
+}
+
+/* Arrow icon style */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  color: #000;
+  font-size: 18px !important;
+  font-weight: 700;
+}
+
+.swiper-button-prev:hover::after,
+.swiper-button-next:hover::after{
+  color: white !important;
+}
+
+/* Hover effects for both */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: green !important;
+  transition: 350ms ease;
+}
+
+.MuiTabs-indicator{
+  background-color: #ff5252 !important;
+}
+.MuiTab-textColorPrimary.Mui-selected{
+  color: #ff5252 !important;
+  font-weight: 600;
+}
+.custom-arrow {
+  z-index: 20;
+  font-size: 2rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  border-radius: 9999px; /* rounded-full */
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.custom-arrow:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Hide default arrows */
+.slick-prev:before,
+.slick-next:before {
+  display: none;
+}
+.slider{
+  height: 100% !important;
+  padding: unset !important;
+}
+
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-in-out;
+}
