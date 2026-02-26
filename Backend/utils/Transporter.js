@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer"
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -8,8 +8,8 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.PORTAL_EMAIL,
         pass: process.env.PORTAL_PASSWORD,
-      },
-      priority: "high"
+    },
+    priority: "high"
 })
 
 export default transporter;

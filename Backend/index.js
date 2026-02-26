@@ -1,27 +1,30 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import AuthRoutes from "./Routes/AuthRoutes.js";
-import DbConnection from "./Database/Connection.js";
-import ProductRoutes from "./Routes/ProductRoutes.js";
+import DBConnection from "./Database/DbConnection.js";
+import authRoute from "./Routes/AuthRoutes.js";
+import categoryRoute from "./Routes/CategoryRoutes.js";
+import productRoute from "./Routes/ProductRoutes.js";
+
+dotenv.config();
 
 const app = express();
-dotenv.config();
-app.use(cors());
+
 app.use(express.json());
+app.use(cors());
+
+app.use("/api/auth", authRoute);
+app.use("/api/v1/category", categoryRoute);
+app.use("/api/products", productRoute);
 
 const PORT = process.env.PORT;
 
 app.get("/", (req, res)=>{
-    return res.send("backend start successfully")
+    return res.status(200).send({success: true, message: "Welcome to Ecommerce Backend"})
 })
 
-app.use("/api/auth", AuthRoutes);
-app.use('/api/products', ProductRoutes)
-
-DbConnection();
+DBConnection();
 
 app.listen(PORT, ()=>{
-    console.log("backend start successfully");
+    console.log("backend running...");
 })
-
