@@ -29,20 +29,11 @@ const ProductItem = ({ data }) => {
 
   const handleAddToCart = async (productId) => {
     try {
-      const token = sessionStorage.getItem("token");
-      if (token) {
-        const response = await postReq("/cart/add", {
-          productId: productId,
-          quantity: quantity
-        });
-        dispatch(setCart(response?.cart));
-        toast.success("Product added to cart!");
-      } else {
-        toast.error("Please login to your account before shopping");
-        setTimeout(() => {
-          navigate('/login');
-        }, 1000);
-      }
+      const response = await postReq("/cart/add", {
+        productId: productId,
+        quantity: quantity
+      });
+      dispatch(setCart(response?.cart));
     } catch (error) {
       console.log(error);
       toast.error("Failed to add product to cart");

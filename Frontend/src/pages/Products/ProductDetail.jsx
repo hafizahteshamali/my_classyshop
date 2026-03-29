@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getReq } from '../../api/axios';
+import { getReq, postReq } from '../../api/axios';
 import { 
   FaStar, 
   FaStarHalfAlt, 
@@ -12,11 +12,12 @@ import {
   FaUndoAlt,
   FaCheckCircle,
   FaMinus,
-  FaPlus,
-  FaShoppingBag
+  FaPlus
 } from 'react-icons/fa';
-import { MdLocalOffer } from 'react-icons/md';
 import { RiSecurePaymentFill } from 'react-icons/ri';
+import {useDispatch} from "react-redux";
+import { setCart } from '../../store/cartSlice';
+import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -26,6 +27,7 @@ const ProductDetail = () => {
     const [selectedColor, setSelectedColor] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch()
 
     const getSingleProduct = async () => {
         try {
@@ -72,6 +74,18 @@ const ProductDetail = () => {
         }
     };
 
+    const handleAddToCart = async () =>{
+        try {
+            const response = await postReq("/cart/add", {
+                productId: id,
+                quantity: quantity
+            })
+            dispatch(setCart(response?.cart));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
@@ -97,32 +111,15 @@ const ProductDetail = () => {
     return (
         <div className="bg-white min-h-screen py-8">
             <div className="container mx-auto px-4">
-                {/* Breadcrumb */}
-                <nav className="text-sm mb-8">
-                    <ol className="list-none p-0 inline-flex">
-                        <li className="flex items-center">
-                            <a href="/" className="text-gray-500 hover:text-gray-700">Home</a>
-                            <span className="mx-2 text-gray-400">/</span>
-                        </li>
-                        <li className="flex items-center">
-                            <a href={`/category/${singleProduct.category.slug}`} className="text-gray-500 hover:text-gray-700">
-                                {singleProduct.category.name}
-                            </a>
-                            <span className="mx-2 text-gray-400">/</span>
-                        </li>
-                        <li className="text-gray-900 font-medium">{singleProduct.name}</li>
-                    </ol>
-                </nav>
-
                 {/* Main Product Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Image Gallery */}
                     <div className="space-y-4">
-                        <div className="aspect-w-1 aspect-h-1 bg-gray-100 rounded-lg overflow-hidden">
+                        <div className="aspect-w-1 aspect-h-1 bg-gray-100 flex justify-center items-center rounded-lg overflow-hidden h-[400px]">
                             <img
                                 src={singleProduct.images[selectedImage]?.url || '/placeholder-image.jpg'}
                                 alt={singleProduct.name}
-                                className="w-full h-full object-cover object-center"
+                                className="h-full w-full object-contain"
                             />
                         </div>
                         
@@ -142,7 +139,7 @@ const ProductDetail = () => {
                                         <img
                                             src={image.url}
                                             alt={`${singleProduct.name} ${index + 1}`}
-                                            className="w-full h-full object-cover object-center"
+                                            className="w-full h-full object-contain"
                                         />
                                     </button>
                                 ))}
@@ -177,12 +174,12 @@ const ProductDetail = () => {
                         <div className="border-y border-gray-200 py-4">
                             <div className="flex items-center space-x-3">
                                 <span className="text-3xl font-bold text-gray-900">
-                                    ₹{discountedPrice}
+                                    {discountedPrice}Rs
                                 </span>
                                 {originalPrice > discountedPrice && (
                                     <>
                                         <span className="text-lg text-gray-500 line-through">
-                                            ₹{originalPrice}
+                                            {originalPrice}Rs
                                         </span>
                                         <span className="px-2 py-1 bg-green-100 text-green-800 text-sm font-medium rounded">
                                             {discountPercentage}% OFF
@@ -229,7 +226,7 @@ const ProductDetail = () => {
                                         <button
                                             key={size}
                                             onClick={() => setSelectedSize(size)}
-                                            className={`w-12 h-12 rounded-lg border text-sm font-medium transition-all
+                                            className={`h-12 p-2 rounded-lg border text-sm font-medium transition-all
                                                 ${selectedSize === size
                                                     ? 'border-black bg-black text-white'
                                                     : 'border-gray-300 text-gray-700 hover:border-gray-400'
@@ -271,12 +268,7 @@ const ProductDetail = () => {
 
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button className="flex-1 bg-black text-white px-6 py-3 rounded-lg font-medium
-                                hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2">
-                                <FaShoppingBag />
-                                <span>Buy Now</span>
-                            </button>
-                            <button className="flex-1 bg-white text-black border-2 border-black px-6 py-3 rounded-lg font-medium
+                            <button onClick={handleAddToCart} className="flex-1 bg-white text-black border-2 border-black px-6 py-3 rounded-lg font-medium
                                 hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
                                 <span>Add to Cart</span>
                             </button>

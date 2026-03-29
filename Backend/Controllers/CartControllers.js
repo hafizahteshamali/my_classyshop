@@ -73,7 +73,7 @@ export const UpdateCartController = async (req, res)=>{
     try {
         const userId = req.user._id;
         const {productId, quantity} = req.body;
-        if(quantity > 1){
+        if(quantity < 1){
             return res.status(400).send({success: false, message: "product must be atleast 1"});
         }
         const cart = await cartModel.findOne({user: userId});
@@ -93,7 +93,7 @@ export const UpdateCartController = async (req, res)=>{
         }
         items.quantity = quantity;
         await cart.save();
-        return res.status(200).send({success: false, message: "cart updated successfully", cart});
+        return res.status(200).send({success: true, message: "cart updated successfully", cart});
     } catch (error) {
         return res.status(500).send({success: false, message: error.message});
     }
@@ -102,13 +102,13 @@ export const UpdateCartController = async (req, res)=>{
 export const DeleteCartController = async (req, res)=>{
     try {
         const userId = req.user._id;
-        const {productId} = req.body;
+        const {productId} = req.params;
 
         const cart = await cartModel.findOne({user: userId});
         if(!cart){
             return res.status(404).send({success: false, message: "cart not found!"});
         }
-        cart.items.filter((item)=>item.product.toString() !== productId);
+        cart.items = cart.items.filter((item)=>item.product.toString() !== productId);
         await cart.save();
         return res.status(200).send({success: 200, message: "product deleted successfully"});
     } catch (error) {

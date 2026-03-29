@@ -7,7 +7,7 @@ const cartRoutes = express.Router();
 cartRoutes.post("/add", requireAuth, CreateCartController);
 cartRoutes.get("/", requireAuth, GetCartController);
 cartRoutes.put("/", requireAuth, UpdateCartController);
-cartRoutes.delete("/remove/:id", requireAuth, DeleteCartController);
+cartRoutes.delete("/remove/:productId", requireAuth, DeleteCartController);
 cartRoutes.delete("/clear", requireAuth, ClearController);
 
 

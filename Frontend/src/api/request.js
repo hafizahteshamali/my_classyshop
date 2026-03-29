@@ -3,33 +3,39 @@ import { toast } from "react-toastify";
 
 const apiClient = axios.create({
     baseURL: "http://localhost:8050/api/",
-    timeout: 30000
-})
+    timeout: 30000,
+    withCredentials: true // 🔥 cookie send/receive ke liye zaruri
+});
 
-apiClient.interceptors.request.use((config)=>{
-    const token = sessionStorage.getItem("token");
-    if(token){
-        config.headers.Authorization = `Bearer ${token}`;
+// 🔥 Request interceptor (ab token manually bhejne ki zarurat nahi)
+apiClient.interceptors.request.use(
+    (config) => {
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return config;
-}, (error)=>{
-    Promise.reject(error)
-})
+);
 
-apiClient.interceptors.response.use((response)=>{
-    if(response.data.success && response.data.message){
-        toast.success(response.data.message);
+apiClient.interceptors.response.use(
+    (response) => {
+        // optional success toast
+        if (response?.data?.success && response?.data?.message) {
+            toast.success(response.data.message);
+        }
+        return response.data;
+    },
+    (error) => {
+        const status = error?.response?.status;
+        const message =
+            error?.response?.data?.message ||
+            error.message ||
+            "Something went wrong";
+
+        toast.error(message);
+
+        return Promise.reject(error);
     }
-    return response.data;
-}, (error)=>{
-    const status = error.response.status;
-    const message = error.response?.data.message || error.message || "something went wrong";
-    toast.error(message);
-    if(status === 401){
-        sessionStorage.removeItem("token");
-        window.location.href="/login";
-    }
-    Promise.reject(error);
-})
+);
 
 export default apiClient;

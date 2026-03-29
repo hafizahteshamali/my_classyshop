@@ -68,7 +68,7 @@ export const CreateProductController = async (req, res) => {
 
 export const GetAllProductsController = async (req, res) => {
     try {
-        const { brand, category, colors, isFeatured, status, page = 1, limit = 10, sortBy = "createdAt", order = "desc" } = req.query;
+        const { brand, category, colors, isFeatured, status, page = 1, limit, sortBy = "createdAt", order = "desc" } = req.query;
         let filter = {};
         if (brand) filter.brand = brand;
 
@@ -108,7 +108,7 @@ export const GetAllProductsController = async (req, res) => {
         }
         if (isFeatured) filter.isFeatured = isFeatured === "true";
         if (status) filter.status = status;
-        const skip = ((page - 1) * limit);
+        const skip = ((page - 1) * Number(limit) || 0);
         const sortOption = { [sortBy]: order === "desc" ? -1 : 1 };
         const products = await productModel.find(filter).populate("category", "name slug").skip(skip).limit(Number(limit)).sort(sortOption);
         const total = await productModel.countDocuments(filter);
@@ -122,12 +122,10 @@ export const SearchProductController = async (req, res) => {
     try {
         const { search } = req.query;
         const product = await productModel.find({
-            $or: [
+            $or:[
                 { name: { $regex: `${search}`, $options: 'i' } },
-                { description: { $regex: `${search}`, $options: 'i' } },
-                { category: { $regex: `${search}`, $options: 'i' } },
                 { brand: { $regex: `${search}`, $options: 'i' } },
-                { price: { $regex: `${search}`, $options: 'i' } },
+                { description: { $regex: `${search}`, $options: 'i' } },
             ]
         })
         if (!product || !product.length) {

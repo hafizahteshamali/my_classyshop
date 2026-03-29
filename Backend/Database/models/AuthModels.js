@@ -42,5 +42,5 @@ authSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 10);
   });
 
-const authModel = mongoose.model("user", authSchema);
+const authModel = mongoose.model("users", authSchema);
 export default authModel;

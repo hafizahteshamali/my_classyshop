@@ -1,11 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import Badge from "@mui/material/Badge";
 import { IoCart } from "react-icons/io5";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
 import Navigation from "./Navigation";
 import { useEffect, useState } from "react";
 import {useSelector} from "react-redux";
+import { getReq, postReq } from "../api/axios";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,23 +15,25 @@ const Header = () => {
     profile: ""
   });
   const data = useSelector((state)=>state?.cart);
-  console.log("data: ", data);
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const firstname = sessionStorage.getItem("firstname");
-    const lastname = sessionStorage.getItem("lastname");
-    const profile = sessionStorage.getItem("profile");
-    
-    setIsUserData({
-      firstname: firstname || "",
-      lastname: lastname || "",
-      profile: profile || ""
-    });
-    
-    if (token) {
-      setIsLoggedIn(true);
+  const getUser = async () =>{
+    try {
+      const response = await getReq("auth/get-me");
+      if(response?.loggedIn){
+        setIsLoggedIn(true);
+        setIsUserData({
+          firstname: response.user.firstname,
+          lastname: response.user.lastname,
+          profile: response.user.profile
+        })
+      }
+    } catch (error) {
+      console.log(error);
     }
+  }
+  
+  useEffect(() => { 
+    getUser();
   }, []);
 
   // Close menu when clicking outside
@@ -48,13 +48,17 @@ const Header = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const handleLogout = ()=>{
-    setIsProfileMenuOpen(false);
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("firstname");
-    sessionStorage.removeItem("lastname");
-    sessionStorage.removeItem("profile");
-    window.location.href = "/";
+  const handleLogout = async ()=>{
+    try {
+      const response = await postReq("auth/logout")
+      console.log(response);
+      if(response.success){
+        setIsProfileMenuOpen(false);
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -105,7 +109,7 @@ const Header = () => {
                 {isLoggedIn && (
                   <span className="h-[20px] w-[20px] rounded-full bg-red-500 text-sm flex justify-center items-center text-white absolute -top-[10px] -right-[10px]">{data.items.length}</span>
                 )}
-              <IoCart className="text-3xl" />
+              <IoCart onClick={()=>navigate("/cart")} className="text-3xl hover:text-gray-700" />
               </div>
             </li>
             <li className="relative profile-menu-container">

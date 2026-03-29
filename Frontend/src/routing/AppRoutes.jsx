@@ -37,6 +37,9 @@ import Beauty from "../pages/CategoryPages/beauty/Beauty"
 import Wellness from "../pages/CategoryPages/welless/Wellness"
 import Jewellery from "../pages/CategoryPages/jewellery/Jewellery"
 import ProductDetail from "../pages/Products/ProductDetail"
+import Cart from "../pages/Cart/Cart"
+import Checkout from "../pages/Checkout/Checkout"
+import OrderConfirmation from "../pages/Checkout/OrderConfirmation"
 
 const AppRoutes = () => {
   return (
@@ -44,6 +47,9 @@ const AppRoutes = () => {
       <Route path="/" element={<Layout />}>
       {/* home Page */}
       <Route index element={<HomePage />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
       <Route path="/mens/t-shirt" element={<TShirt />} />
       <Route path="/mens/casual-shirt" element={<CasualShirts />} />
       <Route path="/mens/blazer-and-coats" element={<BlazerAndCoats />} />

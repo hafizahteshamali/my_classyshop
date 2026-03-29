@@ -6,11 +6,13 @@ dotenv.config();
 
 export const requireAuth = async (req, res, next)=>{
     try {
-        const authHeader = req.headers.authorization;
-        if(!authHeader || !authHeader.startsWith("Bearer ")){
-            return res.status(401).send({success: false, message: "No token provided"});
+        let token;
+        if(req.cookies.token){
+            token = req.cookies.token;
         }
-        const token = authHeader.split(" ")[1];
+        if(!token){
+            return res.status(401).send({success: false, message: "no token provided"})
+        }
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const user = await authModel.findById(decoded._id).select("-password");
         if(!user){
@@ -27,6 +29,6 @@ export const isAdmin = async (req, res, next)=>{
     if(req.user && req.user.role === "admin"){
         next();
     }else{
-        return res.status(401).send({success: false, message: "Access denied. Admin only."});
+        return res.status(403).send({success: false, message: "Access denied. Admin only."});
     }
 }

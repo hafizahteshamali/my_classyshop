@@ -6,18 +6,28 @@ import authRoute from "./Routes/AuthRoutes.js";
 import categoryRoute from "./Routes/CategoryRoutes.js";
 import productRoute from "./Routes/ProductRoutes.js";
 import cartRoutes from "./Routes/CartRoutes.js";
+import orderRoute from "./Routes/OrderRoutes.js";
+import paymentRoute from "./Routes/PaymentRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
+
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // frontend URL
+    credentials: true               // 🔥 IMPORTANT
+}));
 
 app.use("/api/auth", authRoute);
 app.use("/api/v1/category", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart", cartRoutes);
+app.use("/api/order", orderRoute);
+app.use("/api/payment", paymentRoute);
 
 const PORT = process.env.PORT;
 

@@ -1,6 +1,8 @@
 import express from "express";
 import uploadProfile from "../middlewares/uploadProfile.js";
-import { ForgotPassControllers, LoginControllers, LogoutControllers, resendOtp, ResetPassControllers, SignupControllers, VerifyForgotPassControllers, VerifySignupControllers } from "../Controllers/AuthControllers.js";
+import { ForgotPassControllers, getMeControlller, LoginControllers, LogoutControllers, resendOtp, ResetPassControllers, SignupControllers, VerifyForgotPassControllers, VerifySignupControllers } from "../Controllers/AuthControllers.js";
+import { requireAuth } from "../middlewares/requireAuth.js";
+// import { requireAuth } from "../middlewares/requireAuth.js";
 
 const authRoute = express.Router();
 
@@ -12,5 +14,6 @@ authRoute.post("/logout", LogoutControllers)
 authRoute.post("/forgot-password", ForgotPassControllers)
 authRoute.post("/verify-forgot-password", VerifyForgotPassControllers)
 authRoute.post("/reset-password", ResetPassControllers)
+authRoute.get("/get-me", getMeControlller)
 
 export default authRoute;

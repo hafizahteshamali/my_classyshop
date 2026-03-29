@@ -24,13 +24,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
         const response = await postReq("/auth/login", data);
-        // console.log(response);
         if(response?.success){
-            navigate("/");
-            sessionStorage.setItem("token", response?.user?.token);
-            sessionStorage.setItem("profile", response?.user?.profile);
-            sessionStorage.setItem("firstname", response?.user?.firstname);
-            sessionStorage.setItem("lastname", response?.user?.lastname);
             reset();
             navigate("/");
         }
