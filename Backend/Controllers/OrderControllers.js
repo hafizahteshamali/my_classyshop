@@ -18,12 +18,17 @@ export const CreateOrderController = async (req, res)=>{
         // Calculate total and prepare order items
         let subTotal = 0;
         const orderItems = cart.items.map((item)=>{
-            subTotal += item.product.discountedPrice * item.quantity;
-            return { product: item.product._id, quantity: item.quantity, price: item.product.discountedPrice }
+            // ✅ Round to 2 decimal places to avoid floating point issues
+            const price = Math.round(item.product.discountedPrice * 100) / 100;
+            subTotal += price * item.quantity;
+            return { product: item.product._id, quantity: item.quantity, price: price }
         });
 
+        // ✅ Round subtotal to 2 decimal places
+        subTotal = Math.round(subTotal * 100) / 100;
+        
         const shippingCharges = subTotal > 1000 ? 150 : 0;
-        const tax = (subTotal * 18) / 100;
+        const tax = Math.round((subTotal * 18) / 100);
         const totalAmount = subTotal + shippingCharges + tax;
 
         // 1️⃣ Create order in DB
@@ -34,49 +39,57 @@ export const CreateOrderController = async (req, res)=>{
             paymentMethod,
             paymentStatus: paymentMethod === "COD" ? "pending" : "pending",
             orderStatus: "processing",
-            totalAmount
+            totalAmount: Math.round(totalAmount * 100) / 100
         });
 
-        // // 3️⃣ If Stripe, create session
+        // 3️⃣ If Stripe, create session
         if(paymentMethod === "STRIPE"){
             const line_items = cart.items.map((item)=>{
-                const price = Number(item.product.discountedPrice);
+                // ✅ Convert to paisa/cents and ensure integer
+                let price = Math.round(item.product.discountedPrice * 100); // Convert to cents/paisa
+                price = Math.max(price, 50); // Minimum 50 paisa/cents
+                
                 const name = item.product.name;
-                const image = item.product.images[0].url;
+                const image = item.product.images[0]?.url || "";
+                
                 return{
                     price_data: {
-                        currency: "PKR",
+                        currency: "pkr",
                         product_data: {
                             name: name,
-                            images: [image],
+                            images: image ? [image] : [],
                         },
-                        unit_amount: Math.max(Math.round(Number(price) * 100), 50)
+                        unit_amount: Math.round(price) // ✅ Ensure integer
                     },
                     quantity: item.quantity
                 }
             })
 
             if(shippingCharges > 0){
+                // ✅ Convert to paisa/cents and ensure integer
+                const shippingAmount = Math.round(shippingCharges * 100);
                 line_items.push({
                     price_data:{
                         currency: "pkr",
                         product_data:{
                             name: "Shipping Charges"
                         },
-                        unit_amount: (shippingCharges * 100)
+                        unit_amount: shippingAmount
                     },
                     quantity: 1
                 })
             }
 
             if(tax > 0){
+                // ✅ Tax is already rounded, convert to paisa/cents
+                const taxAmount = Math.round(tax * 100);
                 line_items.push({
                     price_data:{
                         currency: "pkr",
                         product_data:{
-                            name: "Tax(18%)"
+                            name: "Tax (18%)"
                         },
-                        unit_amount: (tax * 100)
+                        unit_amount: taxAmount
                     },
                     quantity: 1
                 })
@@ -103,6 +116,7 @@ export const CreateOrderController = async (req, res)=>{
         // 4️⃣ If COD, return order directly
         res.status(200).send({success: true, order});
     } catch (error) {
+        console.error("Create order error:", error);
         return res.status(500).send({success: false, message: error.message});
     }
 }
@@ -120,4 +134,3 @@ export const GetOrderConfirmation = async (req, res)=>{
         return res.status(500).send({success: false, message: error.message});
     }
 }
-
