@@ -12,12 +12,25 @@ import webhookRoute from "./Routes/WebhookRoutes.js";
 
 dotenv.config();
 
-
 const app = express();
+
+// ✅ Raw body saver middleware - ye raw body capture karega
+const rawBodySaver = (req, res, buf, encoding) => {
+  if (buf && buf.length) {
+    req.rawBody = buf.toString(encoding || 'utf8');
+  }
+};
+
+// ✅ IMPORTANT: Webhook route must come BEFORE express.json()
+// This ensures raw body is available for Stripe webhook verification
 app.use("/api/webhook", express.raw({ type: "application/json" }), webhookRoute);
 
+// Now apply other middleware for the rest of the routes
 app.use(cookieParser());
-app.use(express.json());
+
+// ✅ Added verify function to capture raw body for other routes too
+app.use(express.json({ verify: rawBodySaver }));
+
 app.use(cors({
     origin: "https://classy-shop-ecommerce-fost.vercel.app",
     credentials: true
