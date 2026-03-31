@@ -7,8 +7,8 @@ import categoryRoute from "./Routes/CategoryRoutes.js";
 import productRoute from "./Routes/ProductRoutes.js";
 import cartRoutes from "./Routes/CartRoutes.js";
 import orderRoute from "./Routes/OrderRoutes.js";
-import paymentRoute from "./Routes/PaymentRoutes.js";
 import cookieParser from "cookie-parser";
+import webhookRoute from "./Routes/WebhookRoutes.js";
 
 dotenv.config();
 
@@ -18,16 +18,16 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: "https://classy-shop-ecommerce-fost.vercel.app", // frontend URL
-    credentials: true               // 🔥 IMPORTANT
-}));
+    origin: "https://classy-shop-ecommerce-fost.vercel.app",
+    credentials: true
+}))
 
 app.use("/api/auth", authRoute);
 app.use("/api/v1/category", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoute);
-app.use("/api/payment", paymentRoute);
+app.use("/api/webhook", express.raw({type: "application/json"}), webhookRoute)
 
 const PORT = process.env.PORT;
 

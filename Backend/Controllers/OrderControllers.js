@@ -87,7 +87,10 @@ export const CreateOrderController = async (req, res)=>{
                 mode: "payment",
                 line_items,
                 success_url: `${process.env.CLIENT_URL}/order-confirmation/${order._id}`,
-                cancel_url: `${process.env.CLIENT_URL}/cart`
+                cancel_url: `${process.env.CLIENT_URL}/cart`,
+                metadata:{
+                    orderId: order._id.toString()
+                }
             });
 
             return res.status(200).send({success: true, url: session.url});
