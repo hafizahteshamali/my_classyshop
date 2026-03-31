@@ -23,8 +23,10 @@ export const handleStripeWebhook = async (req, res) => {
     case "checkout.session.completed":
       const session = event.data.object;
 
+      console.log("Webhook hit! Metadata:", session.metadata);
       // Order ID metadata se lena
       const orderId = session.metadata.orderId;
+
 
       // Payment status update
       await orderModel.findByIdAndUpdate(orderId, {

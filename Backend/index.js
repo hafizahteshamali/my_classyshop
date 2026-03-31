@@ -14,6 +14,7 @@ dotenv.config();
 
 
 const app = express();
+app.use("/api/webhook", express.raw({ type: "application/json" }), webhookRoute);
 
 app.use(cookieParser());
 app.use(express.json());
@@ -27,7 +28,6 @@ app.use("/api/v1/category", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoute);
-app.use("/api/webhook", express.raw({type: "application/json"}), webhookRoute)
 
 const PORT = process.env.PORT;
 
