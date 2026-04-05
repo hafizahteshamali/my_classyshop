@@ -259,7 +259,9 @@ export const LogoutControllers = async (req, res) => {
   try {
     res.cookie("token", "", {
       httpOnly: true,
-      expires: new Date(0)
+      expires: new Date(0),
+      secure: true,      // ✅ Add this
+      sameSite: "none",  // ✅ Add this
     })
     return res
       .status(200)
