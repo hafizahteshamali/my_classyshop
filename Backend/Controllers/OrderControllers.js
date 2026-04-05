@@ -95,20 +95,18 @@ export const CreateOrderController = async (req, res)=>{
                 })
             }
 
-            console.log(`${process.env.CLIENT_URL}/order/confirmation/${order._id}`)
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ["card"],
+                mode: "payment",
+                line_items,
+                success_url: `${process.env.CLIENT_URL}/order/confirmation/${order._id}`,
+                cancel_url: `${process.env.CLIENT_URL}/cart`,
+                metadata:{
+                    orderId: order._id.toString()
+                }
+            });
 
-            // const session = await stripe.checkout.sessions.create({
-            //     payment_method_types: ["card"],
-            //     mode: "payment",
-            //     line_items,
-            //     success_url: `${process.env.CLIENT_URL}/order-confirmation/${order._id}`,
-            //     cancel_url: `${process.env.CLIENT_URL}/cart`,
-            //     metadata:{
-            //         orderId: order._id.toString()
-            //     }
-            // });
-
-            // return res.status(200).send({success: true, url: session.url});
+            return res.status(200).send({success: true, url: session.url});
         }
 
         // 2️⃣ Clear cart
