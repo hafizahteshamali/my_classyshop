@@ -215,12 +215,12 @@ export const LoginControllers = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "10m" },
     );
-res.cookie("token", token, {
-  httpOnly: true,
-  maxAge: 10 * 60 * 1000,
-  secure: process.env.NODE_ENV === "production", // ✅ fix
-  sameSite: "lax",
-});
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 10 * 60 * 1000,
+      secure: true,
+      sameSite: "none",
+    });
     return res
       .status(200)
       .send({
@@ -260,8 +260,8 @@ export const LogoutControllers = async (req, res) => {
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      secure: process.env.NODE_ENV === "production", // ✅ fix
-      sameSite: "lax",
+      secure: true,      // ✅ Add this
+      sameSite: "none",  // ✅ Add this
     })
     return res
       .status(200)
