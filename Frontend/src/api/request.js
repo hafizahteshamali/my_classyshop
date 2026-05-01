@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:8050/api",
+    baseURL: "https://my-classyshop.vercel.app/api",
     timeout: 30000,
     withCredentials: true
 });
