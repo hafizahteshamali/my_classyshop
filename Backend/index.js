@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use(express.json({ verify: rawBodySaver }));
 
 app.use(cors({
-    origin: "https://classy-shop-ecommerce-fost.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true
 }))
 
