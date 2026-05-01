@@ -50,6 +50,5 @@ app.get("/", (req, res)=>{
 
 DBConnection();
 
-app.listen(PORT, ()=>{
-    console.log("backend running...");
-})
+// Export the app for Vercel serverless functions
+export default app;
