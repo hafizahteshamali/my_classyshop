@@ -218,7 +218,7 @@ export const LoginControllers = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "none",
     });
     return res
@@ -260,7 +260,7 @@ export const LogoutControllers = async (req, res) => {
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      secure: true,      // ✅ Add this
+      secure: process.env.NODE_ENV === "production",     // ✅ Add this
       sameSite: "none",  // ✅ Add this
     })
     return res
