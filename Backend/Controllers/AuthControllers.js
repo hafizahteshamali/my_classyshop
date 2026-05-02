@@ -216,11 +216,11 @@ export const LoginControllers = async (req, res) => {
       { expiresIn: "10m" },
     );
     res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 10 * 60 * 1000,
-      secure: true,
-      sameSite: "none",
-    });
+  httpOnly: true,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  secure: process.env.NODE_ENV === "production", // Production mein true, dev mein false
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+});
     return res
       .status(200)
       .send({
