@@ -218,8 +218,10 @@ export const LoginControllers = async (req, res) => {
     res.cookie("token", token, {
   httpOnly: true,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  secure: process.env.NODE_ENV === "production", // Production mein true, dev mein false
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  secure: true,        // HTTPS
+  sameSite: "none",    // Cross-origin
+  domain: ".vercel.app",  // Vercel domain
+  path: "/",
 });
     return res
       .status(200)
