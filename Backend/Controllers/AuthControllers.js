@@ -215,12 +215,14 @@ export const LoginControllers = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "10m" },
     );
-    res.cookie("token", token, {
+const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
   httpOnly: true,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  secure: true,        // HTTPS
-  sameSite: "none",    // Cross-origin
-  domain: ".vercel.app",  // Vercel domain
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  secure: true,  // Production mein true
+  sameSite: "none",
+  domain: isProduction ? ".vercel.app" : undefined,  // ✅ Dot ke saath
   path: "/",
 });
     return res
