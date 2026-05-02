@@ -215,14 +215,11 @@ export const LoginControllers = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "10m" },
     );
-    const isProduction = process.env.NODE_ENV === "production";
-        res.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      secure: isProduction,  // ✅ Production mein true, local mein false
-      sameSite: "none",      // ✅ Cross-origin ke liye
-      domain: isProduction ? ".vercel.app" : undefined,  // ✅ Ye add karo - important!
-      path: "/",
+      maxAge: 10 * 60 * 1000,
+      secure: true,
+      sameSite: "none",
     });
     return res
       .status(200)
@@ -260,15 +257,12 @@ export const getMeControlller = async (req, res) =>{
 
 export const LogoutControllers = async (req, res) => {
   try {
-    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      secure: isProduction,     // ✅ Production mein true
-      sameSite: "none",         // ✅ Cross-origin ke liye
-      domain: isProduction ? ".vercel.app" : undefined,  // ✅ Domain add karo
-      path: "/",
-    });
+      secure: true,      // ✅ Add this
+      sameSite: "none",  // ✅ Add this
+    })
     return res
       .status(200)
       .send({ success: true, message: "user logout successfully" });
