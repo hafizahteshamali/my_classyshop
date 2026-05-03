@@ -27,9 +27,24 @@ app.use(cookieParser());
 
 app.use(express.json({ verify: rawBodySaver }));
 
+// CORS Configuration - Allow frontend to access API
+const allowedOrigins = [
+    "https://my-classyshop-xy8i.vercel.app",
+    "http://localhost:5173", // For local development
+    "http://localhost:3000"  // Alternative port
+];
+
 app.use(cors({
-    origin: "https://my-classyshop-xy8i.vercel.app",
-    credentials: true
+    origin: function(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }))
 
 app.use("/api/auth", authRoute);
