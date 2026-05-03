@@ -260,16 +260,16 @@ export const getMeControlller = async (req, res) =>{
 
 export const LogoutControllers = async (req, res) => {
   try {
-    const isProduction = process.env.NODE_ENV === "production";
-    
-    res.cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-      maxAge: 0,
-      secure: isProduction,
-      sameSite: "none",
-      domain: isProduction ? ".vercel.app" : undefined,
-    });
+const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", "", {
+  httpOnly: true,
+  expires: new Date(0),     // immediately expire
+  secure: isProduction,
+  sameSite: "none",
+  domain: isProduction ? ".vercel.app" : undefined,
+  path: "/",                // ⚠️ VERY IMPORTANT
+});
     return res
       .status(200)
       .send({ success: true, message: "user logout successfully" });
