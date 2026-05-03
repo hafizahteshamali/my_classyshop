@@ -220,8 +220,9 @@ const isProduction = process.env.NODE_ENV === "production";
 res.cookie("token", token, {
   httpOnly: true,
   maxAge: 10 * 60 * 1000,
-  secure: isProduction,
-  sameSite: "none"
+  secure: true,  // Production mein true
+  sameSite: "none",
+  domain: isProduction ? ".vercel.app" : undefined,
 });
     return res
       .status(200)
@@ -261,12 +262,13 @@ export const LogoutControllers = async (req, res) => {
   try {
     const isProduction = process.env.NODE_ENV === "production";
     
-    // Cookie clear karne ka tarika
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
+      maxAge: 0,
       secure: isProduction,
-      sameSite: "none"
+      sameSite: "none",
+      domain: isProduction ? ".vercel.app" : undefined,
     });
     return res
       .status(200)

@@ -3,11 +3,10 @@ import { toast } from "react-toastify";
 
 const apiClient = axios.create({
     baseURL: "https://my-classyshop.vercel.app/api",
-    timeout: 300000,
+    timeout: 30000,
     withCredentials: true
 });
 
-// 🔥 Request interceptor (ab token manually bhejne ki zarurat nahi)
 apiClient.interceptors.request.use(
     (config) => {
         return config;
@@ -19,7 +18,6 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response) => {
-        // optional success toast
         if (response?.data?.success && response?.data?.message) {
             toast.success(response.data.message);
         }
