@@ -21,14 +21,10 @@ const rawBodySaver = (req, res, buf, encoding) => {
   }
 };
 
-// ✅ IMPORTANT: Webhook route must come BEFORE express.json()
-// This ensures raw body is available for Stripe webhook verification
 app.use("/api/webhook", express.raw({ type: "application/json" }), webhookRoute);
 
-// Now apply other middleware for the rest of the routes
 app.use(cookieParser());
 
-// ✅ Added verify function to capture raw body for other routes too
 app.use(express.json({ verify: rawBodySaver }));
 
 app.use(cors({
@@ -50,5 +46,4 @@ app.get("/", (req, res)=>{
 
 DBConnection();
 
-// Export the app for Vercel serverless functions
 export default app;
