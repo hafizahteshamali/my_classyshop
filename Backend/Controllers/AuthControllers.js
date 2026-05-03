@@ -220,8 +220,8 @@ const isProduction = process.env.NODE_ENV === "production";
 res.cookie("token", token, {
   httpOnly: true,
   maxAge: 10 * 60 * 1000,
-  secure: true,
-  sameSite: "strict"
+  secure: isProduction,
+  sameSite: "none"
 });
     return res
       .status(200)
@@ -265,8 +265,8 @@ export const LogoutControllers = async (req, res) => {
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      secure: true,
-      sameSite: "strict"
+      secure: isProduction,
+      sameSite: "none"
     });
     return res
       .status(200)
