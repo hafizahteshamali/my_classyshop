@@ -221,7 +221,7 @@ res.cookie("token", token, {
   httpOnly: true,
   maxAge: 10 * 60 * 1000,
   secure: true,
-  sameSite: "none"
+  sameSite: "strict"
 });
     return res
       .status(200)
@@ -266,7 +266,7 @@ export const LogoutControllers = async (req, res) => {
       httpOnly: true,
       expires: new Date(0),
       secure: true,
-      sameSite: "none"
+      sameSite: "strict"
     });
     return res
       .status(200)
